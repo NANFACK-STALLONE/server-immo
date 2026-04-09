@@ -1,0 +1,4 @@
+com\immobilier\service\UserServiceTest.class
+com\immobilier\security\JwtTokenProviderTest.class
+com\immobilier\service\PropertyServiceTest.class
+com\immobilier\service\AuthServiceTest.class
