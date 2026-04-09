@@ -1,53 +1,36 @@
 package com.immobilier.config;
 
-import com.immobilier.exception.mapper.AccessDeniedExceptionMapper;
-import com.immobilier.exception.mapper.BadCredentialsExceptionMapper;
-import com.immobilier.exception.mapper.GlobalExceptionMapper;
-import com.immobilier.exception.mapper.IllegalArgumentExceptionMapper;
-import com.immobilier.exception.mapper.ResourceNotFoundExceptionMapper;
-import com.immobilier.exception.mapper.ValidationExceptionMapper;
-import com.immobilier.resource.AuthResource;
-import com.immobilier.resource.PropertyResource;
-import com.immobilier.resource.UserResource;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.ServerProperties;
 import org.springframework.stereotype.Component;
 
-import javax.ws.rs.ApplicationPath;
-
 /**
  * Configuration principale de JAX-RS / Jersey.
  *
- * Remplace toute la configuration Spring MVC (@RestController, @RequestMapping…).
- * Ici on enregistre manuellement :
- *   - les Resources (endpoints)
- *   - les ExceptionMappers (gestion centralisée des erreurs)
- *   - JacksonFeature (sérialisation JSON)
+ * On utilise packages() au lieu de register(XxxResource.class) pour que
+ * Jersey découvre automatiquement les classes @Path et @Provider via le
+ * scan de packages, tout en utilisant l'injection Spring (DI correcte).
+ *
+ * @ApplicationPath est supprimé : le chemin de base est géré par
+ * spring.jersey.application-path=/ dans application.properties,
+ * ce qui évite le conflit entre l'annotation et la propriété.
  */
 @Component
-@ApplicationPath("/")
 public class JerseyConfig extends ResourceConfig {
 
     public JerseyConfig() {
 
-        // ── Resources (endpoints JAX-RS) ──────────────────────────────
-        register(AuthResource.class);
-        register(UserResource.class);
-        register(PropertyResource.class);
+        // Scan automatique des @Path (resources) et @Provider (mappers)
+        packages(
+            "com.immobilier.resource",        // AuthResource, UserResource, PropertyResource
+            "com.immobilier.exception.mapper"  // ExceptionMappers JAX-RS
+        );
 
-        // ── ExceptionMappers (remplacent @RestControllerAdvice) ───────
-        register(ResourceNotFoundExceptionMapper.class);
-        register(BadCredentialsExceptionMapper.class);
-        register(AccessDeniedExceptionMapper.class);
-        register(IllegalArgumentExceptionMapper.class);
-        register(ValidationExceptionMapper.class);
-        register(GlobalExceptionMapper.class);
-
-        // ── JSON via Jackson ──────────────────────────────────────────
+        // Sérialisation JSON via Jackson
         register(JacksonFeature.class);
 
-        // Activer la validation Bean (JSR-380) côté JAX-RS
+        // Bean Validation : renvoyer le détail des erreurs dans la réponse
         property(ServerProperties.BV_SEND_ERROR_IN_RESPONSE, true);
         property(ServerProperties.BV_DISABLE_VALIDATE_ON_EXECUTABLE_OVERRIDE_CHECK, true);
     }

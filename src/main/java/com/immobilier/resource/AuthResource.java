@@ -78,7 +78,6 @@ public class AuthResource {
      */
     @POST
     @Path("/register")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response register(
             @QueryParam("username") String username,
             @QueryParam("email")    String email,
