@@ -251,7 +251,7 @@ public class PropertyServiceTest {
         when(mongoTemplate.count(any(Query.class), eq(Property.class))).thenReturn(1L);
         when(mongoTemplate.find(any(Query.class), eq(Property.class))).thenReturn(properties);
 
-        Page<Property> result = propertyService.searchProperties("Bamenda", 400000.0, 600000.0, 4, pageable);
+        Page<Property> result = propertyService.searchProperties("Bamenda", 400000.0, 600000.0, 4, null, pageable);
 
         assertNotNull(result);
         assertEquals(1, result.getContent().size());

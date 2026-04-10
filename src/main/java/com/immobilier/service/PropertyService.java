@@ -75,12 +75,14 @@ public class PropertyService {
         return propertyRepository.findByAgentId(agentId);
     }
 
-    public Page<Property> searchProperties(String city, Double minPrice, Double maxPrice, Integer bedrooms, Pageable pageable) {
+    public Page<Property> searchProperties(String city, Double minPrice, Double maxPrice,
+                                            Integer bedrooms, String propertyType, Pageable pageable) {
         List<Criteria> criteriaList = new ArrayList<>();
         criteriaList.add(Criteria.where("isPublished").is(true));
 
         if (city != null && !city.isBlank()) {
-            criteriaList.add(Criteria.where("city").is(city));
+            // Recherche insensible à la casse sur la ville
+            criteriaList.add(Criteria.where("city").regex("^" + city.trim() + "$", "i"));
         }
         if (minPrice != null && maxPrice != null) {
             criteriaList.add(Criteria.where("price").gte(minPrice).lte(maxPrice));
@@ -91,6 +93,11 @@ public class PropertyService {
         }
         if (bedrooms != null) {
             criteriaList.add(Criteria.where("bedrooms").gte(bedrooms));
+        }
+        if (propertyType != null && !propertyType.isBlank()) {
+            criteriaList.add(Criteria.where("propertyType").is(
+                    Property.PropertyType.valueOf(propertyType.toUpperCase())
+            ));
         }
 
         Query query = new Query(new Criteria().andOperator(criteriaList.toArray(new Criteria[0])));

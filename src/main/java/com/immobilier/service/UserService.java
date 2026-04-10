@@ -108,6 +108,13 @@ public class UserService {
         log.info("Mot de passe réinitialisé pour: {}", email);
     }
 
+    public User changeUserRole(String id, RoleEnum newRole) {
+        User user = getUserById(id);
+        log.info("Changement du rôle de l'utilisateur {} : {} → {}", id, user.getRole(), newRole);
+        user.setRole(newRole);
+        return userRepository.save(user);
+    }
+
     public void deleteUser(String id) {
         User user = getUserById(id);
         log.info("Suppression de l'utilisateur: {}", id);

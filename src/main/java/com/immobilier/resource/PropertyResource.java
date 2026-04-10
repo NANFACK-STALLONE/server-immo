@@ -105,16 +105,17 @@ public class PropertyResource {
     @GET
     @Path("/search")
     public Response searchProperties(
-            @QueryParam("city")     String  city,
-            @QueryParam("minPrice") Double  minPrice,
-            @QueryParam("maxPrice") Double  maxPrice,
-            @QueryParam("bedrooms") Integer bedrooms,
+            @QueryParam("city")         String  city,
+            @QueryParam("minPrice")     Double  minPrice,
+            @QueryParam("maxPrice")     Double  maxPrice,
+            @QueryParam("bedrooms")     Integer bedrooms,
+            @QueryParam("propertyType") String  propertyType,
             @QueryParam("page") @DefaultValue("0")  int page,
             @QueryParam("size") @DefaultValue("10") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
         Page<Property> pageResult =
-                propertyService.searchProperties(city, minPrice, maxPrice, bedrooms, pageable);
+                propertyService.searchProperties(city, minPrice, maxPrice, bedrooms, propertyType, pageable);
 
         PageResponse<PropertyDTO> response =
                 PageResponse.of(pageResult, propertyService::convertToDTO);

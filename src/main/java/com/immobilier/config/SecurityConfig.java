@@ -128,10 +128,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // Auth : totalement public (login, register, refresh, validate, health)
                 .antMatchers("/api/auth/**").permitAll()
 
-                // Properties : lecture publique sans token
+                // Properties : lecture publique sans token (tout le monde peut parcourir)
+                // La restriction intervient uniquement lors d'une transaction (contact, offre...)
                 .antMatchers(HttpMethod.GET, "/api/properties/public").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/properties/search").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/properties/{id}").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/properties/*").permitAll()
 
                 // Tout le reste requiert une authentification
                 .anyRequest().authenticated();

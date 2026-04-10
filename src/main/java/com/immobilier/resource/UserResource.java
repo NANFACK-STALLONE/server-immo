@@ -185,6 +185,67 @@ public class UserResource {
     }
 
     // ─────────────────────────────────────────────────────────────────────────
+    // PUT /api/users/{id}/role   — changer le rôle d'un utilisateur
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Change le rôle d'un utilisateur.
+     *
+     * Accès : ROLE_ADMIN uniquement
+     *
+     * @param id    ID MongoDB de l'utilisateur
+     * @param role  Nouveau rôle : ROLE_USER | ROLE_BUYER | ROLE_SELLER | ROLE_AGENT | ROLE_ADMIN
+     */
+    @PUT
+    @Path("/{id}/role")
+    @PreAuthorize("hasRole('ADMIN')")
+    public Response changeUserRole(
+            @PathParam("id")    String id,
+            @QueryParam("role") String role) {
+
+        com.immobilier.entity.RoleEnum newRole =
+                com.immobilier.entity.RoleEnum.valueOf(role.toUpperCase());
+        User updated = userService.changeUserRole(id, newRole);
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("message", "Rôle mis à jour avec succès");
+        body.put("user",    userService.convertToDTO(updated));
+        return Response.ok(body).build();
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // PUT /api/users/me/become-buyer  — passer directement au rôle ACHETEUR
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Permet à un utilisateur (ROLE_USER) de passer directement au rôle ROLE_BUYER
+     * sans avoir besoin d'une validation admin.
+     *
+     * Accès : tout utilisateur authentifié (sauf si déjà BUYER ou rôle supérieur)
+     */
+    @PUT
+    @Path("/me/become-buyer")
+    @PreAuthorize("hasAnyRole('USER', 'BUYER', 'AGENT', 'BUYER', 'SELLER', 'ADMIN')")
+    public Response becomeBuyer() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.getUserByUsername(auth.getName());
+
+        // Autoriser uniquement si rôle actuel est ROLE_USER
+        if (user.getRole() != com.immobilier.entity.RoleEnum.ROLE_USER) {
+            Map<String, Object> err = new HashMap<>();
+            err.put("message", "Vous avez déjà un rôle : " + user.getRole().name());
+            return Response.status(Response.Status.BAD_REQUEST).entity(err).build();
+        }
+
+        User updated = userService.changeUserRole(user.getId(), com.immobilier.entity.RoleEnum.ROLE_BUYER);
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("message", "Félicitations ! Vous êtes maintenant Acheteur.");
+        body.put("user",    userService.convertToDTO(updated));
+        return Response.ok(body).build();
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
     // PUT /api/users/{id}/disable
     // ─────────────────────────────────────────────────────────────────────────
 

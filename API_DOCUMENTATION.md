@@ -7,7 +7,12 @@
 **Base de données:** MongoDB
 
 ---
-
+ƒöÉ Compte ADMIN cr├®├® avec succ├¿s !
+2026-04-10 04:40:37.053  INFO 9964 --- [           main] com.immobilier.config.DataInitializer    :    Username : admin
+2026-04-10 04:40:37.055  INFO 9964 --- [           main] com.immobilier.config.DataInitializer    :    Email    : admin@immo.com
+2026-04-10 04:40:37.055  INFO 9964 --- [           main] com.immobilier.config.DataInitializer    :    Password : Admin@2024!
+2026-04-10 04:40:37.055  INFO 9964 --- [           main] com.immobilier.config.DataInitializer    :    R├┤le     : ROLE_ADMIN
+2026-04-10 04:40:37.055  INFO 9964 --- [           main] com.immobilier.config.DataInitializer    : ÔÜá´©Å  Pensez ├á changer le mot de passe en production !
 ## Stack Technique
 
 | Composant | Technologie | Rôle |
