@@ -1,20 +1,20 @@
-# 🏠 API REST Immobilier
+# API REST Immobilier
 
-API REST complète pour la gestion immobilière avec authentification JWT, contrôle d'accès basé sur les rôles (RBAC), et gestion des propriétés.
+API REST pour la gestion immobilière avec authentification JWT, contrôle d'accès basé sur les rôles , et gestion des propriétés.
 
-## 📋 Caractéristiques
+## Caractéristiques
 
-- ✅ **Authentification JWT** avec tokens d'accès et refresh tokens
-- ✅ **Contrôle d'accès basé sur les rôles (RBAC)** - ADMIN, AGENT, BUYER, SELLER, USER
-- ✅ **Gestion complète des utilisateurs** (CRUD, changement de mot de passe, activation/désactivation)
-- ✅ **Gestion des propriétés immobilières** (CRUD, recherche avancée, filtrage)
-- ✅ **Validation des données** avec JSR-303
-- ✅ **Gestion d'erreurs globale**
-- ✅ **Tests unitaires complets** avec JUnit 5 et Mockito
-- ✅ **Documentation API** avec Swagger/OpenAPI
-- ✅ **Base de données JPA/Hibernate**
+-  **Authentification JWT** avec tokens d'accès et refresh tokens
+-  **Contrôle d'accès basé sur les rôles (RBAC)** - ADMIN, AGENT, BUYER, SELLER, USER
+-  **Gestion complète des utilisateurs** (CRUD, changement de mot de passe, activation/désactivation)
+-  **Gestion des propriétés immobilières** (CRUD, recherche avancée, filtrage)
+-  **Validation des données** avec JSR-303
+-  **Gestion d'erreurs globale**
+-  **Tests unitaires complets** avec JUnit 5 et Mockito
+-  **Documentation API** avec Swagger/OpenAPI
+-  **Base de données JPA/Hibernate**
 
-## 🛠️ Stack Technologique
+##  Stack Technologique
 
 - **Framework**: Spring Boot 2.7.14
 - **Authentification**: JWT (JJWT 0.11.5)
@@ -27,7 +27,7 @@ API REST complète pour la gestion immobilière avec authentification JWT, contr
 - **Tests**: JUnit 5, Mockito
 - **Build**: Maven
 
-## 📁 Structure du Projet
+## Structure du Projet
 
 ```
 immobilier-api/
@@ -73,7 +73,7 @@ immobilier-api/
 └── pom.xml
 ```
 
-## 🚀 Installation et Démarrage
+## Installation et Démarrage
 
 ### Prérequis
 
@@ -121,9 +121,9 @@ immobilier-api/
    Console H2: http://localhost:8080/api/h2-console
    ```
 
-## 📚 API Endpoints
+## API Endpoints
 
-### 🔐 Authentication Endpoints (`/api/auth`)
+### Authentication Endpoints (`/api/auth`)
 
 #### 1. Connexion
 ```http
@@ -189,7 +189,7 @@ Response 200:
 }
 ```
 
-### 👤 Users Endpoints (`/api/users`)
+### Users Endpoints (`/api/users`)
 
 #### 1. Obtenir le profil actuel
 ```http
@@ -253,7 +253,7 @@ PUT /api/users/{id}/disable
 Authorization: Bearer eyJhbGc...
 ```
 
-### 🏠 Properties Endpoints (`/api/properties`)
+### Properties Endpoints (`/api/properties`)
 
 #### 1. Obtenir les propriétés publiées
 ```http
@@ -349,7 +349,7 @@ DELETE /api/properties/{id}
 Authorization: Bearer eyJhbGc...
 ```
 
-## 🔐 Rôles et Permissions
+## Rôles et Permissions
 
 | Rôle | Description | Permissions |
 |------|-------------|-------------|
@@ -359,7 +359,7 @@ Authorization: Bearer eyJhbGc...
 | BUYER | Acheteur | Consulter propriétés |
 | USER | Utilisateur standard | Consulter propriétés publiques |
 
-## 🧪 Tests
+## Tests
 
 ### Exécuter tous les tests
 ```bash
@@ -376,7 +376,7 @@ mvn test -Dtest=UserServiceTest
 mvn clean test jacoco:report
 ```
 
-## 📊 Modèles de Données
+## Modèles de Données
 
 ### User
 ```java
@@ -422,7 +422,7 @@ mvn clean test jacoco:report
 }
 ```
 
-## 🛡️ Sécurité
+## Sécurité
 
 - **JWT Tokens**: Tokens d'accès (24h) et refresh tokens (7j)
 - **Password Encoding**: BCrypt avec salt aléatoire
@@ -431,7 +431,7 @@ mvn clean test jacoco:report
 - **Entity Validation**: Validation JSR-303 sur tous les inputs
 - **Error Handling**: Gestion d'erreurs sécurisée sans exposition de détails sensibles
 
-## 📝 Exemples d'Utilisation
+## Exemples d'Utilisation
 
 ### Flux d'authentification complet
 
@@ -458,7 +458,7 @@ mvn clean test jacoco:report
    curl -X POST "http://localhost:8080/api/auth/refresh?refreshToken=<REFRESH_TOKEN>"
    ```
 
-## 🐛 Dépannage
+## Dépannage
 
 ### Port déjà utilisé
 ```bash
@@ -472,17 +472,17 @@ Vérifiez la configuration dans `application.properties` et assurez-vous que Pos
 ### Problèmes JWT
 Vérifiez que la clé secrète JWT est suffisamment longue (min 32 caractères).
 
-## 📞 Support
+## Support
 
 Pour toute question ou problème:
 - Consultez la documentation Swagger: `http://localhost:8080/api/swagger-ui.html`
 - Vérifiez les logs de l'application: `target/logs/`
 
-## 📄 Licence
+## Licence
 
 Ce projet est sous licence MIT.
 
-## ✅ Prochaines Étapes
+## Prochaines Étapes
 
 - [ ] Ajouter la pagination aux listes
 - [ ] Implémenter les images de propriétés
