@@ -11,9 +11,9 @@
 
 3. Gardez un terminal séparé pour exécuter les commandes cURL
 
-## 🔐 Authentification
+##  Authentification
 
-### 1️⃣ Vérifier la santé de l'API
+### 1️ Vérifier la santé de l'API
 ```bash
 curl -X GET "http://localhost:8080/api/auth/health"
 ```
@@ -40,7 +40,7 @@ curl -X POST "http://localhost:8080/api/auth/register" \
   --data-urlencode "username=alice" \
   --data-urlencode "email=alice@example.com" \
   --data-urlencode "password=SecurePass123" \
-  --data-urlencode "fullName=Alice Johnson"
+  --data-urlencode "fullName=Johnson"
 ```
 
 ### 3️⃣ Se connecter (Login)

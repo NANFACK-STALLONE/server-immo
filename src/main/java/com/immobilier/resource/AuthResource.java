@@ -2,6 +2,7 @@ package com.immobilier.resource;
 
 import com.immobilier.dto.LoginRequest;
 import com.immobilier.dto.LoginResponse;
+import com.immobilier.dto.RegisterRequest;
 import com.immobilier.entity.User;
 import com.immobilier.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -44,18 +45,20 @@ public class AuthResource {
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // POST /api/auth/register   — paramètres dans l'URL (@QueryParam)
+    // POST /api/auth/register   — body JSON
     // ─────────────────────────────────────────────────────────────────────────
     @POST
     @Path("/register")
-    public Response register(
-            @QueryParam("username") String username,
-            @QueryParam("email")    String email,
-            @QueryParam("password") String password,
-            @QueryParam("fullName") String fullName) {
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response register(@Valid RegisterRequest request) {
 
-        log.info("Nouvelle demande d'enregistrement pour: {}", email);
-        User newUser = authService.register(username, email, password, fullName);
+        log.info("Nouvelle demande d'enregistrement pour: {}", request.getEmail());
+        User newUser = authService.register(
+                request.getUsername(),
+                request.getEmail(),
+                request.getPassword(),
+                request.getFullName()
+        );
 
         Map<String, Object> body = new HashMap<>();
         body.put("message",  "Enregistrement réussi");

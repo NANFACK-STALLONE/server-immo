@@ -24,7 +24,13 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
                         AuthenticationException authException)
             throws IOException, ServletException {
 
-        log.error("Erreur d'authentification: {}", authException.getMessage());
+        String uri         = request.getRequestURI();
+        String servletPath = request.getServletPath();
+        String pathInfo    = request.getPathInfo();
+        String method      = request.getMethod();
+
+        log.error("=== 401 BLOQUÉ === méthode={} uri={} servletPath='{}' pathInfo='{}' | {}",
+                method, uri, servletPath, pathInfo, authException.getMessage());
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -33,7 +39,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         body.put("status", HttpServletResponse.SC_UNAUTHORIZED);
         body.put("error", "Non autorisé");
         body.put("message", authException.getMessage());
-        body.put("path", request.getServletPath());
+        body.put("path", uri);   // URI complète au lieu de servletPath vide
 
         final ObjectMapper mapper = new ObjectMapper();
         mapper.writeValue(response.getOutputStream(), body);

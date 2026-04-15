@@ -15,6 +15,7 @@ C:\Users\DIGITAL MARKET\WorkSpace\immobilier-api\src\main\java\com\immobilier\se
 C:\Users\DIGITAL MARKET\WorkSpace\immobilier-api\src\main\java\com\immobilier\config\JerseyConfig.java
 C:\Users\DIGITAL MARKET\WorkSpace\immobilier-api\src\main\java\com\immobilier\resource\UserResource.java
 C:\Users\DIGITAL MARKET\WorkSpace\immobilier-api\src\main\java\com\immobilier\config\SecurityConfig.java
+C:\Users\DIGITAL MARKET\WorkSpace\immobilier-api\src\main\java\com\immobilier\dto\RegisterRequest.java
 C:\Users\DIGITAL MARKET\WorkSpace\immobilier-api\src\main\java\com\immobilier\dto\PropertyDTO.java
 C:\Users\DIGITAL MARKET\WorkSpace\immobilier-api\src\main\java\com\immobilier\dto\LoginResponse.java
 C:\Users\DIGITAL MARKET\WorkSpace\immobilier-api\src\main\java\com\immobilier\repository\RoleRequestRepository.java

@@ -9,17 +9,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/**
- * Wrapper de pagination générique pour JAX-RS.
- *
- * Remplace org.springframework.data.domain.Page dans les réponses HTTP :
- * Spring Data Page est un objet Spring MVC, pas sérialisable proprement
- * en JSON via JAX-RS/Jersey.
- *
- * Usage dans un Resource :
- *   Page<Property> page = service.findAll(pageable);
- *   return Response.ok(PageResponse.of(page, service::convertToDTO)).build();
- */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

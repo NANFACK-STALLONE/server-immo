@@ -10,8 +10,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -95,6 +97,39 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .passwordEncoder(passwordEncoder());
     }
 
+    /**
+     * RequestMatcher basé sur getRequestURI() — toujours fiable avec Jersey.
+     *
+     * Problème : avec spring.jersey.application-path=/, Jersey est mappé sur /*
+     * ce qui donne getServletPath()="" et getPathInfo()="/api/auth/register".
+     * antMatchers() utilise servletPath+pathInfo, mais la concaténation peut
+     * échouer selon les versions de Spring Security.
+     *
+     * Solution : RequestMatcher personnalisé qui utilise directement getRequestURI()
+     * — jamais vide, toujours le chemin complet de la requête.
+     */
+    private static final RequestMatcher PUBLIC_URLS = request -> {
+        String uri    = request.getRequestURI();
+        String method = request.getMethod();
+
+        // Auth endpoints : toujours publics
+        if (uri.startsWith("/api/auth/")) return true;
+
+        // Annonces : lecture publique
+        if ("GET".equals(method) && (
+                uri.startsWith("/api/properties/public") ||
+                uri.startsWith("/api/properties/search") ||
+                uri.matches("/api/properties/[^/]+$")
+        )) return true;
+
+        return false;
+    };
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().requestMatchers(PUBLIC_URLS);
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -116,25 +151,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
 
             // ── Règles d'autorisation par URL ────────────────────────────────
+            // Note : les routes publiques (auth, properties GET) sont déjà
+            // exclues via web.ignoring() ci-dessus — plus besoin de permitAll() ici.
             .authorizeRequests()
-
-                // Ressources statiques
-                .antMatchers(
-                    "/", "/favicon.ico",
-                    "/**/*.png", "/**/*.gif", "/**/*.svg",
-                    "/**/*.jpg", "/**/*.html", "/**/*.css", "/**/*.js"
-                ).permitAll()
-
-                // Auth : totalement public (login, register, refresh, validate, health)
-                .antMatchers("/api/auth/**").permitAll()
-
-                // Properties : lecture publique sans token (tout le monde peut parcourir)
-                // La restriction intervient uniquement lors d'une transaction (contact, offre...)
-                .antMatchers(HttpMethod.GET, "/api/properties/public").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/properties/search").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/properties/*").permitAll()
-
-                // Tout le reste requiert une authentification
                 .anyRequest().authenticated();
 
         // ── Filtre JWT avant UsernamePasswordAuthenticationFilter ────────────

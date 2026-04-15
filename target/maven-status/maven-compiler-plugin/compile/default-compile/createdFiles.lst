@@ -12,6 +12,7 @@ com\immobilier\exception\mapper\ResourceNotFoundExceptionMapper.class
 com\immobilier\service\RoleRequestService.class
 com\immobilier\exception\mapper\BadCredentialsExceptionMapper.class
 com\immobilier\entity\User$UserBuilder.class
+com\immobilier\dto\RegisterRequest.class
 com\immobilier\security\JwtAuthenticationFilter.class
 com\immobilier\service\CustomUserDetailsService.class
 com\immobilier\repository\RoleRequestRepository.class

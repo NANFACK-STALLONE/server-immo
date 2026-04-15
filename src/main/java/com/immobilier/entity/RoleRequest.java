@@ -7,13 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
-/**
- * Entité MongoDB — Demande de changement de rôle.
- *
- * Un utilisateur (ROLE_USER) soumet une demande pour obtenir un rôle
- * supérieur (SELLER, AGENT, BUYER). L'admin peut ensuite approuver ou
- * rejeter la demande avec un commentaire optionnel.
- */
+
 @Document(collection = "role_requests")
 @Data
 @NoArgsConstructor

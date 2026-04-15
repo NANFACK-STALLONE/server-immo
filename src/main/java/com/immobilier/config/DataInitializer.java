@@ -10,17 +10,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-/**
- * DataInitializer — s'exécute automatiquement au démarrage de l'application.
- *
- * Vérifie si un compte ADMIN existe déjà dans MongoDB.
- * → S'il n'existe pas : le crée automatiquement avec les credentials
- *   définis dans application.properties.
- * → S'il existe déjà : ne fait rien (idempotent).
- *
- * Implémente CommandLineRunner → Spring Boot l'exécute après le
- * démarrage complet du contexte applicatif (MongoDB connecté, beans prêts).
- */
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
