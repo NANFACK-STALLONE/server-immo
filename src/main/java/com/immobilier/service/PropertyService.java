@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -77,12 +78,25 @@ public class PropertyService {
 
     public Page<Property> searchProperties(String city, Double minPrice, Double maxPrice,
                                             Integer bedrooms, String propertyType, Pageable pageable) {
+        if (minPrice != null && minPrice < 0) {
+            throw new IllegalArgumentException("Le prix minimum ne peut pas etre negatif");
+        }
+        if (maxPrice != null && maxPrice < 0) {
+            throw new IllegalArgumentException("Le prix maximum ne peut pas etre negatif");
+        }
+        if (minPrice != null && maxPrice != null && minPrice > maxPrice) {
+            throw new IllegalArgumentException("Le prix minimum ne peut pas etre superieur au prix maximum");
+        }
+        if (bedrooms != null && bedrooms < 0) {
+            throw new IllegalArgumentException("Le nombre de chambres ne peut pas etre negatif");
+        }
+
         List<Criteria> criteriaList = new ArrayList<>();
         criteriaList.add(Criteria.where("isPublished").is(true));
 
         if (city != null && !city.isBlank()) {
             // Recherche insensible à la casse sur la ville
-            criteriaList.add(Criteria.where("city").regex("^" + city.trim() + "$", "i"));
+            criteriaList.add(Criteria.where("city").regex("^" + Pattern.quote(city.trim()) + "$", "i"));
         }
         if (minPrice != null && maxPrice != null) {
             criteriaList.add(Criteria.where("price").gte(minPrice).lte(maxPrice));
@@ -95,9 +109,13 @@ public class PropertyService {
             criteriaList.add(Criteria.where("bedrooms").gte(bedrooms));
         }
         if (propertyType != null && !propertyType.isBlank()) {
-            criteriaList.add(Criteria.where("propertyType").is(
-                    Property.PropertyType.valueOf(propertyType.toUpperCase())
-            ));
+            try {
+                criteriaList.add(Criteria.where("propertyType").is(
+                        Property.PropertyType.valueOf(propertyType.trim().toUpperCase())
+                ));
+            } catch (IllegalArgumentException ex) {
+                throw new IllegalArgumentException("Type de propriete invalide: " + propertyType);
+            }
         }
 
         Query query = new Query(new Criteria().andOperator(criteriaList.toArray(new Criteria[0])));
@@ -162,6 +180,10 @@ public class PropertyService {
     }
 
     public Property publishProperty(String id, Boolean publish, String ownerId) {
+        if (publish == null) {
+            throw new IllegalArgumentException("Le parametre publish est requis");
+        }
+
         Property property = getPropertyById(id);
 
         if (!property.getOwnerId().equals(ownerId)) {
@@ -193,6 +215,13 @@ public class PropertyService {
     }
 
     public PropertyDTO convertToDTO(Property property) {
+        User owner = property.getOwnerId() != null
+                ? userRepository.findById(property.getOwnerId()).orElse(null)
+                : null;
+        User agent = property.getAgentId() != null
+                ? userRepository.findById(property.getAgentId()).orElse(null)
+                : null;
+
         return PropertyDTO.builder()
                 .id(property.getId())
                 .title(property.getTitle())
@@ -210,8 +239,12 @@ public class PropertyService {
                 .status(property.getStatus())
                 .ownerId(property.getOwnerId())
                 .ownerName(property.getOwnerName())
+                .ownerPhone(owner != null ? owner.getPhone() : null)
+                .ownerEmail(owner != null ? owner.getEmail() : null)
                 .agentId(property.getAgentId())
                 .agentName(property.getAgentName())
+                .agentPhone(agent != null ? agent.getPhone() : null)
+                .agentEmail(agent != null ? agent.getEmail() : null)
                 .createdAt(property.getCreatedAt())
                 .updatedAt(property.getUpdatedAt())
                 .isPublished(property.getIsPublished())

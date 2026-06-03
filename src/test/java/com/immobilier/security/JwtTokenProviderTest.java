@@ -26,7 +26,7 @@ public class JwtTokenProviderTest {
     private JwtTokenProvider jwtTokenProvider;
 
     private User testUser;
-    private String jwtSecret = "mySecretKeyForTestingPurposesLongerThan32Characters!@#$";
+    private String jwtSecret = "mySecretKeyForTestingPurposesLongerThan64CharactersForHS512Security!@#$123456";
     private long jwtExpiration = 86400000; // 24 hours
 
     @BeforeEach

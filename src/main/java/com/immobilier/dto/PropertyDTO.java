@@ -57,8 +57,12 @@ public class PropertyDTO {
     private Property.PropertyStatus status;
     private String ownerId;
     private String ownerName;
+    private String ownerPhone;
+    private String ownerEmail;
     private String agentId;
     private String agentName;
+    private String agentPhone;
+    private String agentEmail;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Boolean isPublished;

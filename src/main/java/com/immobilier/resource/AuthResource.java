@@ -2,6 +2,7 @@ package com.immobilier.resource;
 
 import com.immobilier.dto.LoginRequest;
 import com.immobilier.dto.LoginResponse;
+import com.immobilier.dto.RefreshTokenRequest;
 import com.immobilier.dto.RegisterRequest;
 import com.immobilier.entity.User;
 import com.immobilier.service.AuthService;
@@ -74,9 +75,10 @@ public class AuthResource {
     // ─────────────────────────────────────────────────────────────────────────
     @POST
     @Path("/refresh")
-    public Response refreshToken(@QueryParam("refreshToken") String refreshToken) {
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response refreshToken(@Valid RefreshTokenRequest request) {
         log.info("Demande de rafraîchissement de token");
-        LoginResponse response = authService.refreshToken(refreshToken);
+        LoginResponse response = authService.refreshToken(request.getRefreshToken());
         return Response.ok(response).build();
     }
 

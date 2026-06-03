@@ -1,5 +1,6 @@
 package com.immobilier.resource;
 
+import com.immobilier.dto.ChangePasswordRequest;
 import com.immobilier.dto.UserDTO;
 import com.immobilier.entity.User;
 import com.immobilier.service.UserService;
@@ -150,13 +151,11 @@ public class UserResource {
     @POST
     @Path("/change-password")
     @PreAuthorize("hasAnyRole('USER', 'AGENT', 'BUYER', 'SELLER', 'ADMIN')")
-    public Response changePassword(
-            @QueryParam("oldPassword") String oldPassword,
-            @QueryParam("newPassword") String newPassword) {
+    public Response changePassword(@Valid ChangePasswordRequest request) {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.getUserByUsername(auth.getName());
-        userService.changePassword(user.getId(), oldPassword, newPassword);
+        userService.changePassword(user.getId(), request.getOldPassword(), request.getNewPassword());
 
         Map<String, Object> body = new HashMap<>();
         body.put("message", "Mot de passe changé avec succès");

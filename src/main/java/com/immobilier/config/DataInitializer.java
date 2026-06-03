@@ -10,24 +10,21 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class DataInitializer implements CommandLineRunner {
 
-    private final UserRepository  userRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // Credentials lus depuis application.properties
-    // (avec valeurs par défaut si la propriété est absente)
     @Value("${app.admin.username:admin}")
     private String adminUsername;
 
     @Value("${app.admin.email:admin@immo.com}")
     private String adminEmail;
 
-    @Value("${app.admin.password:Admin@2024!}")
+    @Value("${app.admin.password:}")
     private String adminPassword;
 
     @Value("${app.admin.fullname:Administrateur}")
@@ -35,29 +32,27 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        log.info("=== Initialisation des données de démarrage ===");
+        log.info("=== Initialisation des donnees de demarrage ===");
         initAdmin();
-        log.info("=== Initialisation terminée ===");
+        log.info("=== Initialisation terminee ===");
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // Création du compte Admin
-    // ─────────────────────────────────────────────────────────────────────────
     private void initAdmin() {
+        if (adminPassword == null || adminPassword.isBlank()) {
+            log.warn("Compte admin non cree: APP_ADMIN_PASSWORD est vide.");
+            return;
+        }
 
-        // Vérification 1 : admin déjà présent par email
         if (userRepository.existsByEmail(adminEmail)) {
-            log.info("✅ Compte admin déjà existant ({}) — aucune action.", adminEmail);
+            log.info("Compte admin deja existant ({}) - aucune action.", adminEmail);
             return;
         }
 
-        // Vérification 2 : admin déjà présent par username
         if (userRepository.existsByUsername(adminUsername)) {
-            log.info("✅ Compte admin déjà existant (username: {}) — aucune action.", adminUsername);
+            log.info("Compte admin deja existant (username: {}) - aucune action.", adminUsername);
             return;
         }
 
-        // Aucun admin → on crée le compte
         User admin = User.builder()
                 .username(adminUsername)
                 .email(adminEmail)
@@ -70,12 +65,11 @@ public class DataInitializer implements CommandLineRunner {
         userRepository.save(admin);
 
         log.info("========================================================");
-        log.info("🔐 Compte ADMIN créé avec succès !");
+        log.info("Compte ADMIN cree avec succes.");
         log.info("   Username : {}", adminUsername);
         log.info("   Email    : {}", adminEmail);
-        log.info("   Password : {}", adminPassword);
-        log.info("   Rôle     : ROLE_ADMIN");
-        log.info("⚠️  Pensez à changer le mot de passe en production !");
+        log.info("   Password : defini via variable d'environnement");
+        log.info("   Role     : ROLE_ADMIN");
         log.info("========================================================");
     }
 }
